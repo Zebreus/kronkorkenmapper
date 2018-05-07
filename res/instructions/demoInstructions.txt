@@ -1,0 +1,45 @@
+kkmInstruction
+width
+32
+width
+height
+32
+height
+pic
+retropilz.png
+pic
+kk
+aktionskronkorken.png 423000
+bionade.png 423000
+bitburgerfussball.png 423000
+bl.png 423000
+clausthaler.png 423000
+clausthaler2.png 423000
+colalight.png 423000
+efes.png 423000
+engelbraeu.png 423000
+erdinger.png 423000
+fanta.png 423000
+heylandsbier.png 423000
+kapuziner.png 423000
+karamalz.png 423000
+koestel.png 423000
+licher.png 423000
+minutemaid.png 423000
+mixery.png 423000
+muehlenkoelsch.png 423000
+ohne.png 423000
+paulaner.png 423000
+paulaner2.png 423000
+postbier.png 423000
+rotlicht.png 423000
+schoefferhofergelb.png 423000
+spessartspecht.png 423000
+spiderman.png 423000
+spinne.png 423000
+veltins+.png 423000
+veltinscola.png 423000
+vitamalz.png 423000
+wasserdreieck.png 423000
+zoetlerbier.png 423000
+kk
