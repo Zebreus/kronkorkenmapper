@@ -17,7 +17,7 @@ BufferedImage original;
 BufferedImage scaled;
 BufferedImage finished;
 public Picture(String path,int width,int height) throws IOException{
-	File f = new File("res/bilder/"+path);
+	File f = new File(path);
 	original = ImageIO.read(f);
 	scaled = scalePicture(original,height,width);
 	finished = new BufferedImage(scaled.getWidth(),scaled.getHeight(),BufferedImage.TYPE_3BYTE_BGR);

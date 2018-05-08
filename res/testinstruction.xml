@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "instruction.dtd">
+<mapper picture_directory="res/bilder/" subpicture_directory="res/kronkorken/">
+	<picture file="retropilz.png" height="32" width="32">
+		<subpicture file="aktionskronkorken.png" amount="423000" />
+		<subpicture file="bionade.png" amount="423000" />
+		<subpicture file="bitburgerfussball.png" amount="423000" />
+		<subpicture file="bl.png" amount="423000" />
+		<subpicture file="clausthaler.png" />
+		<subpicture file="clausthaler2.png" amount="423000" />
+		<subpicture file="colalight.png" amount="423000" />
+		<subpicture file="efes.png" amount="423000" />
+		<subpicture file="engelbraeu.png" amount="423000" />
+		<subpicture file="erdinger.png" amount="423000" />
+		<subpicture file="fanta.png" amount="423000" />
+		<subpicture file="heylandsbier.png" amount="423000" />
+		<subpicture file="kapuziner.png" amount="423000" />
+		<subpicture file="karamalz.png" amount="423000" />
+		<subpicture file="koestel.png" amount="423000" />
+		<subpicture file="licher.png" amount="423000" />
+		<subpicture file="minutemaid.png" amount="423000" />
+		<subpicture file="mixery.png" amount="423000" />
+		<subpicture file="muehlenkoelsch.png" amount="423000" />
+		<subpicture file="ohne.png" amount="423000" />
+		<subpicture file="paulaner.png" amount="423000" />
+		<subpicture file="paulaner2.png" amount="423000" />
+		<subpicture file="postbier.png" amount="423000" />
+		<subpicture file="rotlicht.png" amount="423000" />
+		<subpicture file="schoefferhofergelb.png" amount="423000" />
+		<subpicture file="spessartspecht.png" amount="423000" />
+		<subpicture file="spiderman.png" amount="423000" />
+		<subpicture file="spinne.png" amount="423000" />
+		<subpicture file="veltins+.png" amount="423000" />
+		<subpicture file="veltinscola.png" amount="423000" />
+		<subpicture file="vitamalz.png" amount="423000" />
+		<subpicture file="wasserdreieck.png" amount="423000" />
+		<subpicture file="zoetlerbier.png" amount="423000" />
+	</picture>
+</mapper>

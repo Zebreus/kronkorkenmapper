@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!ELEMENT mapper (picture*)>
+<!ELEMENT picture (subpicture*)>
+<!ELEMENT subpicture EMPTY>
+<!ATTLIST mapper mode (1|2|3|4|5) "2">
+<!ATTLIST mapper segment_height CDATA "20">
+<!ATTLIST mapper segment_width CDATA "20">
+<!ATTLIST mapper picture_directory CDATA #IMPLIED>
+<!ATTLIST mapper subpicture_directory CDATA #IMPLIED>
+<!ATTLIST picture file CDATA #REQUIRED>
+<!ATTLIST picture height CDATA #IMPLIED>
+<!ATTLIST picture width CDATA #IMPLIED>
+<!ATTLIST subpicture file CDATA #REQUIRED>
+<!ATTLIST subpicture amount CDATA "infinite">
+<!ATTLIST subpicture shape (square|round) "square">

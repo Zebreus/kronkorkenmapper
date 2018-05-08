@@ -7,7 +7,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.input.sax.XMLReaders;
+import org.jdom2.input.stax.DTDParser;
 
 public class Main {
 	static int TYPE = 2;
@@ -19,7 +27,7 @@ public class Main {
 	static Segment[] segments;
 	static Segment[][] finished;
 public static void main(String[] args) throws Exception{
-	setup("demoInstructions.txt");
+	setupXML("res/testinstruction.xml");
 	for(int xx = 0;xx<horizontal;xx++){
 		for(int yy = 0;yy<vertical;yy++){
 			for(Segment s:segments){
@@ -49,6 +57,82 @@ public static void main(String[] args) throws Exception{
 	}
 	target.finish();
 }
+
+public static void setupXML(String filename){
+	Document doc = new Document();
+	SAXBuilder builder = new SAXBuilder(XMLReaders.DTDVALIDATING);
+	try {
+		doc = builder.build(filename);
+		Element root = doc.getRootElement();
+		
+		
+		String pictureDir = root.getAttributeValue("picture_directory");
+		String subpictureDir = root.getAttributeValue("subpicture_directory");
+		
+		
+		List<Element> children = root.getChildren();
+		
+		for(Element picture:children){
+			int width = 5;
+			int height = 5;
+			String pWidth = picture.getAttributeValue("width");
+			String pHeight = picture.getAttributeValue("height");
+			String file = picture.getAttributeValue("file");
+			
+			if(pWidth.matches("^[1-9]?[0-9]+$")){
+				width = Integer.parseInt(pWidth);
+			}else {
+				//TODO handle exception
+				System.err.println("Invalid picture width.");
+			}
+			
+			if(pHeight.matches("^[1-9]?[0-9]+$")){
+				height = Integer.parseInt(pHeight);
+			}else {
+				//TODO handle exception
+				System.err.println("Invalid picture height.");
+			}
+			
+			//TODO horizontal and vertical seemingly get set here
+			System.out.println(pictureDir+file);
+			target = new Picture(pictureDir+file,width,height);
+			
+			segments = new Segment[picture.getChildren().size()];
+			int pos = 0;
+			for(Element subpicture:picture.getChildren()){
+				int amount;
+				String Samount = subpicture.getAttributeValue("amount");
+				
+				if(Samount.equals("infinite")){
+					amount = Integer.MAX_VALUE;
+				}else if(Samount.matches("^[1-9]?[0-9]+$")){
+					amount = Integer.parseInt(Samount);
+				}else {
+					//TODO handle exception
+					System.err.println("Invalid subpicture amount.");
+					amount = 0;
+				}
+				
+				segments[pos] = new Segment(subpictureDir+subpicture.getAttributeValue("file"),amount);
+				pos++;
+			}
+			
+			//TODO multichild support
+			break;
+		}
+		
+		finished = new Segment[horizontal][vertical];
+		
+		System.out.println("Load succesfull"+pictureDir);
+	} catch (JDOMException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
+/* Old setup
 public static void setup(String filename) throws Exception{
 	Scanner s = new Scanner(new FileInputStream(new File("res/instructions/"+filename)));
 	int width = -1;
@@ -107,6 +191,7 @@ public static void setup(String filename) throws Exception{
 		finished = new Segment[horizontal][vertical];
 	}
 }
+*/
 private static class SegmentComparator implements Comparator{
 
 	@Override

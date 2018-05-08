@@ -22,7 +22,7 @@ BufferedImage original;
 BufferedImage scaled;
 public Segment(String path,int amount) throws IOException{
 	this.amount=amount;
-	File f = new File("res/kronkorken/"+path);
+	File f = new File(path);
 	original = ImageIO.read(f);
 	scaled = scaleSegment(original);
 	ratings = new int[Main.horizontal][Main.vertical];
