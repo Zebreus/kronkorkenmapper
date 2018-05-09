@@ -55,7 +55,6 @@ public int[] getBestRating(){
 			}else{
 				
 				if(ratings[xx][yy]<best){
-//					System.out.println(m+"hh"+ratings[xx][yy]);
 					best=ratings[xx][yy];
 					x=xx;
 					y=yy;
@@ -105,8 +104,8 @@ public static BufferedImage scaleSegment(BufferedImage sbi) {
 public int rate(int xPos,int yPos) throws Exception{
 	if(ratings[xPos][yPos]==-1){
 	if(xPos>Main.horizontal||yPos>Main.vertical){
-		System.err.println("Tried to rate at invalid Position");
-		throw new Exception();
+		//TODO solve better
+		Output.logException(new Exception("Tried to rate at invalid Position"), "Internal error");
 	}
 	int rating = 0;
 	Picture pic=Main.target;

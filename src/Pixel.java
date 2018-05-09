@@ -83,26 +83,12 @@ public class Pixel {
 			dif += Math.abs(this.v - pixel.v);
 			return dif;
 		}else if (Main.TYPE == 5) {
-			int dif = 0;
-			
-			dif+= ColorDistance.CIEDE_2000.getDistance(new Color(r,b,g),new Color(pixel.r,pixel.g,pixel.b));
-			System.out.println(dif);
-			return dif;
+			//license tldr
+			return 0;
 		}
 		else if (Main.TYPE == 6) {
-			int dif = 0;
-			dif = Math.abs(this.r - pixel.r);
-			if (Math.abs(this.g - pixel.g) > dif) {
-				dif = Math.abs(this.g - pixel.g);
-			}
-			if (Math.abs(this.b - pixel.b) > dif) {
-				dif = Math.abs(this.b - pixel.b);
-			}
-			dif += Math.abs(this.r - pixel.r);
-			dif += Math.abs(this.g - pixel.g);
-			dif += Math.abs(this.b - pixel.b);
-			dif+= ColorDistance.CIEDE_2000.getDistance(new Color(r,b,g),new Color(pixel.r,pixel.g,pixel.b))*2;
-			return dif;
+			//license tldr
+			return 0;
 		}if (Main.TYPE == 7) {
 			int dif = 0;
 			dif = Math.abs(this.r - pixel.r);

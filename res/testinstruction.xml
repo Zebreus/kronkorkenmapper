@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper SYSTEM "instruction.dtd">
 <mapper picture_directory="res/bilder/" subpicture_directory="res/kronkorken/">
-	<picture file="retropilz.png" height="32" width="32">
+	<picture file="pilz.png" height="64" width="64">
 		<subpicture file="aktionskronkorken.png" amount="423000" />
 		<subpicture file="bionade.png" amount="423000" />
 		<subpicture file="bitburgerfussball.png" amount="423000" />
 		<subpicture file="bl.png" amount="423000" />
-		<subpicture file="clausthaler.png" />
+		<subpicture file="clausthaler.png" amount="423000" />
 		<subpicture file="clausthaler2.png" amount="423000" />
 		<subpicture file="colalight.png" amount="423000" />
 		<subpicture file="efes.png" amount="423000" />

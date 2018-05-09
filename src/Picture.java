@@ -65,20 +65,24 @@ public void showFinished(){
     jf.setVisible(true);
 }
 public static BufferedImage scalePicture(BufferedImage sbi, int vNum, int hNum) {
-	System.out.println(vNum+"vnum   hnum"+hNum);
 	if(vNum==0){
 		if(hNum==0){
 			vNum=((int)(sbi.getHeight()/Main.SEGMENT_HEIGHT));
+			Output.HIGH.logln("Guessing width: "+vNum);
 			hNum=((int)(sbi.getWidth()/Main.SEGMENT_LENGTH));
+			Output.HIGH.logln("Guessing height: "+hNum);
 		}else{
 			vNum=(int)(sbi.getHeight()/((float)sbi.getWidth()/(float)hNum));
+			Output.HIGH.logln("Guessing width: "+vNum);
 		}
 	}else if(hNum==0){
 		hNum=(int)(sbi.getWidth()/((float)sbi.getHeight()/(float)vNum));
-		}
+		Output.HIGH.logln("Guessing height: "+hNum);
+	}
 	Main.vertical=vNum;
 	Main.horizontal=hNum;
-	System.out.println(vNum+"vnum   hnum"+hNum);
+	Output.DEBUG.logln("Height: "+hNum);
+	Output.DEBUG.logln("Width: "+vNum);
 	int height = vNum*Main.SEGMENT_HEIGHT;
 	int length = hNum*Main.SEGMENT_LENGTH;
     BufferedImage dbi = null;

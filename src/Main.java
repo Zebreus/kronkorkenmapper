@@ -18,6 +18,7 @@ import org.jdom2.input.sax.XMLReaders;
 import org.jdom2.input.stax.DTDParser;
 
 public class Main {
+	static final String VERSION = "0.1.1";
 	static int TYPE = 2;
 	static final int SEGMENT_HEIGHT = 20;
 	static final int SEGMENT_LENGTH = 20;
@@ -27,7 +28,56 @@ public class Main {
 	static Segment[] segments;
 	static Segment[][] finished;
 public static void main(String[] args) throws Exception{
-	setupXML("res/testinstruction.xml");
+	
+	String instructions = "";
+	
+	for(int i = 0;i<args.length;i++){
+		switch(args[i]) {
+		case "-h":
+			
+			Output.NORMAL.logln("-h		Display this text");
+			Output.NORMAL.logln("-i <instructionfile>	Use the given instructions");
+			Output.NORMAL.logln("-d		Show debug output");
+			Output.NORMAL.logln("-v		Show much output");
+			Output.NORMAL.logln("-e		Show only errors");
+			Output.NORMAL.logln("-s		Show no output");
+			Output.NORMAL.logln("\nkronkorkenmapper version: "+VERSION);
+			System.exit(0);
+			break;
+		case "-i":
+			if(i+1<args.length){
+				i++;
+				instructions = args[i];
+			}else {
+				Output.ERROR.logln("Missing instruction file after -i");
+			}
+			break;
+		case "-d":
+			Output.level = Output.DEBUG;
+			break;
+		case "-v":
+			Output.level = Output.HIGH;
+			break;
+		case "-e":
+			Output.level = Output.ERROR;
+			break;
+		case "-s":
+			Output.level = Output.NONE;
+			break;
+		default:
+			Output.ERROR.logln("Invalid option -- "+args[i]);
+			Output.ERROR.logln("Try kkmapper -h for help");
+			break;
+		}
+	}
+	Output.HIGH.logln("Outputlevel is "+Output.level.toString());
+	if(!instructions.equals("")){
+		setupXML(instructions);
+	}else {
+		Output.ERROR.logln("Missing instructions, quitting");
+		System.exit(0);
+	}
+	
 	for(int xx = 0;xx<horizontal;xx++){
 		for(int yy = 0;yy<vertical;yy++){
 			for(Segment s:segments){
@@ -35,7 +85,8 @@ public static void main(String[] args) throws Exception{
 			}
 		}
 	}
-	System.out.println(segments[0].getBestRating()[0]);
+	
+	Output.DEBUG.logln("segments[0].getBestRating()[0]: "+segments[0].getBestRating()[0]);
 	int prev = 0;
 	for(int i = 0;i<vertical*horizontal;i++){
 		Arrays.sort(segments,new SegmentComparator());
@@ -51,7 +102,7 @@ public static void main(String[] args) throws Exception{
 		}
 		if((int)(((double)i/(double)(vertical*horizontal))*100)>prev){
 			prev = (int)(((double)i/(double)(vertical*horizontal))*100);
-			System.out.println(prev+"% matched");
+			Output.NORMAL.logln(prev+"% matched");
 		}
 //		System.out.println(i+" of "+vertical*horizontal+" pairings done");
 	}
@@ -59,148 +110,108 @@ public static void main(String[] args) throws Exception{
 }
 
 public static void setupXML(String filename){
+	Output.HIGH.logln("Loading instruction file "+filename);
+	//TODO finish dtd implementation
 	Document doc = new Document();
 	SAXBuilder builder = new SAXBuilder(XMLReaders.DTDVALIDATING);
+	
 	try {
 		doc = builder.build(filename);
+		Output.HIGH.logln("Successfully loaded and validatet instruction file");
+		
 		Element root = doc.getRootElement();
 		
 		
 		String pictureDir = root.getAttributeValue("picture_directory");
 		String subpictureDir = root.getAttributeValue("subpicture_directory");
-		
+		Output.DEBUG.logln("pictureDir: "+pictureDir);
+		Output.DEBUG.logln("segmentDir: "+subpictureDir);
 		
 		List<Element> children = root.getChildren();
 		
 		for(Element picture:children){
-			int width = 5;
-			int height = 5;
+			int width = 0;
+			int height = 0;
+			
 			String pWidth = picture.getAttributeValue("width");
 			String pHeight = picture.getAttributeValue("height");
 			String file = picture.getAttributeValue("file");
 			
-			if(pWidth.matches("^[1-9]?[0-9]+$")){
+			if(pWidth==null||pWidth.equals("")) {
+				Output.HIGH.logln("No width specified, guessing value");
+				width = 0;
+			}else if(pWidth.matches("^[0-9]+$")){
 				width = Integer.parseInt(pWidth);
+				Output.DEBUG.logln("Width successfully parsed");
 			}else {
-				//TODO handle exception
-				System.err.println("Invalid picture width.");
+				InstructionParsingException ipe = new InstructionParsingException("Could not parse width value "+pWidth+" for picture "+file);
+				Output.logException(ipe, "Invalid width specified, guessing value");
 			}
 			
-			if(pHeight.matches("^[1-9]?[0-9]+$")){
+			if(pHeight==null||pHeight.equals("")) {
+				Output.HIGH.logln("No height specified, guessing value");
+				height = 0;
+			}else if(pHeight.matches("^[0-9]+$")){
 				height = Integer.parseInt(pHeight);
+				Output.DEBUG.logln("Height successfully parsed");
 			}else {
-				//TODO handle exception
-				System.err.println("Invalid picture height.");
+				InstructionParsingException ipe = new InstructionParsingException("Could not parse height value "+pHeight+" for picture "+file);
+				Output.logException(ipe, "Invalid height specified, guessing value");
 			}
 			
-			//TODO horizontal and vertical seemingly get set here
-			System.out.println(pictureDir+file);
-			target = new Picture(pictureDir+file,width,height);
+			Output.DEBUG.logln("picture file: "+file);
+			
+			try {
+				//TODO horizontal and vertical seemingly get set here
+				target = new Picture(pictureDir+file,width,height);
+			}catch(IOException e) {
+				Output.logException(e,"Failed to load picture");
+				System.exit(1);
+			}
+			
+			Output.HIGH.logln("Picture "+file+" loaded");
 			
 			segments = new Segment[picture.getChildren().size()];
 			int pos = 0;
 			for(Element subpicture:picture.getChildren()){
-				int amount;
+				int amount = 0;
+				String Sfile = subpicture.getAttributeValue("file");
 				String Samount = subpicture.getAttributeValue("amount");
 				
-				if(Samount.equals("infinite")){
+				if(Samount.equals("infinite")||Samount.equals("")){
 					amount = Integer.MAX_VALUE;
-				}else if(Samount.matches("^[1-9]?[0-9]+$")){
+				}else if(Samount.matches("^[0-9]+$")){
 					amount = Integer.parseInt(Samount);
 				}else {
-					//TODO handle exception
-					System.err.println("Invalid subpicture amount.");
-					amount = 0;
+					InstructionParsingException ipe = new InstructionParsingException("Could not parse segment amount "+Samount+" for segment "+Sfile);
+					Output.logException(ipe, "Invalid amount");
+					System.exit(1);
 				}
 				
-				segments[pos] = new Segment(subpictureDir+subpicture.getAttributeValue("file"),amount);
+				try {
+				segments[pos] = new Segment(subpictureDir+Sfile,amount);
+				}catch(IOException e) {
+					Output.logException(e,"Failed to load segment");
+					System.exit(1);
+				}
+				Output.HIGH.logln("Segment "+Sfile+" loaded");
 				pos++;
 			}
 			
-			//TODO multichild support
+			//TODO multipicture support
 			break;
 		}
 		
 		finished = new Segment[horizontal][vertical];
-		
-		System.out.println("Load succesfull"+pictureDir);
+		Output.HIGH.logln("Loaded instruction file");
 	} catch (JDOMException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		Output.logException(e, "Failed to parse instruction file");
+		System.exit(1);
 	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		Output.logException(e,"Failed to load instruction file");
+		System.exit(1);
 	}
 }
-/* Old setup
-public static void setup(String filename) throws Exception{
-	Scanner s = new Scanner(new FileInputStream(new File("res/instructions/"+filename)));
-	int width = -1;
-	int height = -1;
-	if(s.next().equals("kkmInstruction")){
-		while(s.hasNext()){
-			String c =  s.next();
-			switch (c){
-			case "kk":
-				String in = "";
-				in = s.next();
-				LinkedList<Segment> seg = new LinkedList();
-				while(!in.equals("kk")){
-					seg.add(new Segment(in,Integer.parseInt(s.next())));
-					in = s.next();
-				}
-				segments = new Segment[seg.size()];
-				for(int i = 0;i<segments.length;i++){
-					segments[i]=seg.poll();
-				}
-				break;
-			case "pic":
-				String pic = s.next();
-				target=new Picture(pic,width,height);
-				if(!s.next().equals("pic")){
-					System.err.println("Malformed Fild at pic");
-					throw new Exception();
-				}
-				break;
-			case "width":
-				int wid = Integer.parseInt(s.next());
-				if(wid<=0){
-					width=0;
-				}else{
-					width=wid;
-				}
-				if(!s.next().equals("width")){
-					System.err.println("Malformed Fild at width");
-					throw new Exception();
-				}
-				break;
-			case "height":
-				int hid = Integer.parseInt(s.next());
-				if(hid<=0){
-					height=0;
-				}else{
-					height=hid;
-				}
-				if(!s.next().equals("height")){
-					System.err.println("Malformed Fild at height");
-					throw new Exception();
-				}
-				break;
-			}
-		}
-		finished = new Segment[horizontal][vertical];
-	}
-}
-*/
-private static class SegmentComparator implements Comparator{
 
-	@Override
-	public int compare(Object arg0, Object arg1) {
-		Segment seg1 = (Segment)arg0;
-		Segment seg2 = (Segment)arg1;
-		
-		return seg1.getBestRating()[0]-seg2.getBestRating()[0];
-	}
-	
-}
+
 }
